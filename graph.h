@@ -1,8 +1,8 @@
+//  graph.h 
 //
-//  graph.h
-//  
+//  "I pledge my honor that I've abided by the Stevens Honor System."
 //
-//  Created by Nick Primamore on 3/1/18.
+//  Nicholas Primamore and Matthew Monaco
 //
 
 #ifndef    GRAPH_H
