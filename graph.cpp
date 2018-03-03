@@ -33,14 +33,18 @@ Graph :: Graph(int n, int rep){
         type = LIST;
         Graph::Node* listArray[numVertices];
         list = listArray;
-        //need to set all edges to infinity or null
+        for(int index = 0; index < numVertices; index++){
+            (*(list + index))->edgeWeight = INFINITY;
+        }
     }
     else{
         numVertices = n;
         type = MATRIX;
         float matrixArray[numVertices * numVertices]; // 1D arrray implementation
         matrix = matrixArray;
-        //need to set all edges to infinity or null
+        for(int index = 0; index < (numVertices * numVertices); index++){
+            *(matrix + index) = INFINITY;
+        }
     }
 }
 
