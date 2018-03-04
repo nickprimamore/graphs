@@ -12,12 +12,13 @@
 #include <math.h>
 using namespace std;
 
+
 //implementing Node defined in graph.h for adjacency list
 struct Graph :: Node{
     int value;
     float edgeWeight;
     Node* next;
-}
+};
 
 /* Make an empty graph with n vertices (empty means all edges either set to INFINITY or NULL,
  depending on representation), using either adjacency matrix
@@ -26,12 +27,13 @@ struct Graph :: Node{
  if rep is not MATRIX or LIST, return NULL
  */
 Graph :: Graph(int n, int rep){
-    if(n < 1 || rep != MATRIX || rep!= LIST) return NULL;
-    
-    if(rep == LIST){
+    if(n < 1 || rep != MATRIX || rep!= LIST){
+        //not sure what to do b/c can't return anything in constructor
+    }
+    else if(rep == LIST){
         numVertices = n;
         type = LIST;
-        Graph::Node* listArray[numVertices];
+        Graph::Node** listArray = new Graph::Node*[numVertices];
         list = listArray;
         for(int index = 0; index < numVertices; index++){
             (*(list + index))->edgeWeight = INFINITY;
@@ -40,7 +42,7 @@ Graph :: Graph(int n, int rep){
     else{
         numVertices = n;
         type = MATRIX;
-        float matrixArray[numVertices * numVertices]; // 1D arrray implementation
+        float* matrixArray = new float[numVertices * numVertices]; // 1D array implementation
         matrix = matrixArray;
         for(int index = 0; index < (numVertices * numVertices); index++){
             *(matrix + index) = INFINITY;
