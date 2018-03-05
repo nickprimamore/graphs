@@ -62,7 +62,7 @@ Graph :: ~Graph(){
  I.E. a change in the first graph should not change the second graph
  If rep is not MATRIX or LIST, return NULL
  */
-void Graph* cloneGraph(int rep){
+Graph* :: Graph cloneGraph(int rep){
     //unsure of the return for this method
     if(type == rep){
         return; //unsure of what to return
@@ -71,7 +71,7 @@ void Graph* cloneGraph(int rep){
     }else if(rep == LIST){
         
     }else{
-        return; //idk what to return
+        return NULL;
     }
 }
 
@@ -88,7 +88,7 @@ int Graph :: numVerts(){
  make no change and return false. If the edge already exists, DO NOT UPDATE IT! Just return false
  if w is INFINITY or negative, do nothing, and return false.
  */
-bool addEdge( int source, int target, float w){
+bool Graph :: addEdge( int source, int target, float w){
     if(w == INFINITY || w < 0){
         return false;   
     }
@@ -98,7 +98,7 @@ bool addEdge( int source, int target, float w){
  true, if there was an edge from source to target, and both source and target are valid vertex numbers.
  Otherwise, make no change and return false.
  */
-bool delEdge( int source, int target){
+bool Graph :: delEdge( int source, int target){
     
 }
 
@@ -106,6 +106,6 @@ bool delEdge( int source, int target){
  if there is one; otherwise return INFINITY. (part of the math.h library)
  Return -1.0 if source or target are not valid vertex numbers.
  */
-float edge( int source, int target){
+float Graph :: edge( int source, int target){
     
 }
