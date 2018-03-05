@@ -56,8 +56,56 @@ Graph :: ~Graph(){
     
 }
 
+/* make a DEEP copy of g, but using the representation
+ specified by rep (which is assumed to be MATRIX or LIST)
+ Everything should be copied over, not just references
+ I.E. a change in the first graph should not change the second graph
+ If rep is not MATRIX or LIST, return NULL
+ */
+void Graph* cloneGraph(int rep){
+    //unsure of the return for this method
+    if(type == rep){
+        return; //unsure of what to return
+    }else if(rep == MATRIX){
+        
+    }else if(rep == LIST){
+        
+    }else{
+        return; //idk what to return
+    }
+}
+
 /* return number of vertices.
  Note that this is needed since the property numVerts is private*/
 int Graph :: numVerts(){
     return numVertices;
+}
+
+/* add edge from source to target with weight w, and return
+ true, if source and target are valid vertex numbers and
+ there was no edge from source to target initially.
+ Otherwise if source or target are invalid, or the edge already exists,
+ make no change and return false. If the edge already exists, DO NOT UPDATE IT! Just return false
+ if w is INFINITY or negative, do nothing, and return false.
+ */
+bool addEdge( int source, int target, float w){
+    if(w == INFINITY || w < 0){
+        return false;   
+    }
+}
+
+/* delete edge from source to target, and return
+ true, if there was an edge from source to target, and both source and target are valid vertex numbers.
+ Otherwise, make no change and return false.
+ */
+bool delEdge( int source, int target){
+    
+}
+
+/* return weight of the edge from source to target,
+ if there is one; otherwise return INFINITY. (part of the math.h library)
+ Return -1.0 if source or target are not valid vertex numbers.
+ */
+float edge( int source, int target){
+    
 }
