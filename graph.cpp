@@ -23,8 +23,8 @@ struct Graph :: Node{
 /* Make an empty graph with n vertices (empty means all edges either set to INFINITY or NULL,
  depending on representation), using either adjacency matrix
  or adjacency lists depending on whether rep==MATRIX or rep==LIST.
- if n <1, return NULL
- if rep is not MATRIX or LIST, return NULL
+ if n <1, set numVertices to 1
+ if rep is not MATRIX or LIST, defaults to MATRIX
  */
 Graph :: Graph(int n, int rep){
     if(n < 1){
@@ -64,9 +64,9 @@ Graph :: ~Graph(){
     else{
         if(list != NULL){
             for(int index = 0; index < numVertices; index++){
-                while(list[index] != NULL){
-                    Node * temp = list[index];
-                    list[index] = list[index]->next;
+                while(*(list + index) != NULL){
+                    Graph::Node * temp = *(list + index);
+                    *(list + index) = (*(list + index))->next;
                     delete temp;
                 }
             }
@@ -81,7 +81,7 @@ Graph :: ~Graph(){
  I.E. a change in the first graph should not change the second graph
  If rep is not MATRIX or LIST, return NULL
  */
-Graph* :: Graph cloneGraph(int rep){
+Graph* Graph :: cloneGraph(int rep){
     //unsure of the return for this method
     if(type == rep){
         return; //unsure of what to return
@@ -108,17 +108,58 @@ int Graph :: numVerts(){
  if w is INFINITY or negative, do nothing, and return false.
  */
 bool Graph :: addEdge( int source, int target, float w){
-    if(w == INFINITY || w < 0){
-        return false;   
+    //invalid cases:
+    if(w == INFINITY || w < 0) return false;
+    if(source < 0 || source > numVerts - 1) return false;
+    if(target < 0 || target > numVerts - 1) return false;
+    
+    //FOR ADJACENCY LIST:
+    //think of each slot in the array as "head" pointers, they are all NULL at first
+    //check if NULL first before checking values and traversing list
+    //if edge doesnt exist, dont care about NULL
+    if(type == LIST && list != NULL){
+            
+    }
+    else{ //it's a matrix
+        if(matrix != NULL){
+            float val = (*(matrix + (numVertices*source+target)));
+            //edge already exists
+            if(val != INFINITY ){
+                return false;
+            }
+            else{
+                (*(matrix + (numVertices*source+target))) = w;
+                return true;
+            }
+        }
     }
 }
+
 
 /* delete edge from source to target, and return
  true, if there was an edge from source to target, and both source and target are valid vertex numbers.
  Otherwise, make no change and return false.
  */
-bool Graph :: delEdge( int source, int target){
+bool Graph :: delEdge(int source, int target){
+    //invalid vertices:
+    if(source < 0 || source > numVerts - 1) return false;
+    if(target < 0 || target > numVerts - 1) return false;
     
+    if(type == LIST && list != NULL){
+        
+    }
+    else{ //it's a matrix
+        if(matrix != NULL){
+            float val = (*(matrix + (numVertices*source+target)));
+            if(val != INFINITY){
+                (*(matrix + (numVertices*source+target))) = INFINITY;
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
 }
 
 /* return weight of the edge from source to target,
@@ -126,5 +167,22 @@ bool Graph :: delEdge( int source, int target){
  Return -1.0 if source or target are not valid vertex numbers.
  */
 float Graph :: edge( int source, int target){
+    //invalid vertices:
+    if(source < 0 || source > numVerts - 1) return -1.0;
+    if(target < 0 || target > numVerts - 1) return -1.0;
     
+    if(type == LIST && list != NULL){
+        
+    }
+    else{ //it's a matrix
+        if(matrix != NULL){
+            float val = (*(matrix + (numVertices*source+target)));
+            if(val == INFINITY){
+                return INFINITY;
+            }
+            else{
+                return val;
+            }
+        }
+    }
 }
