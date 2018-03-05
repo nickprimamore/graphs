@@ -27,33 +27,52 @@ struct Graph :: Node{
  if rep is not MATRIX or LIST, return NULL
  */
 Graph :: Graph(int n, int rep){
-    if(n < 1 || rep != MATRIX || rep!= LIST){
-        //not sure what to do b/c can't return anything in constructor
+    if(n < 1){
+        numVertices = 1;
     }
-    else if(rep == LIST){
+    else{
         numVertices = n;
+    }
+    if(rep == LIST){
         type = LIST;
         Graph::Node** listArray = new Graph::Node*[numVertices];
         list = listArray;
         for(int index = 0; index < numVertices; index++){
-            (*(list + index))->edgeWeight = INFINITY;
+            (*(list + index)) = NULL;
         }
+        matrix = NULL;
     }
     else{
-        numVertices = n;
         type = MATRIX;
         float* matrixArray = new float[numVertices * numVertices]; // 1D array implementation
         matrix = matrixArray;
         for(int index = 0; index < (numVertices * numVertices); index++){
-            *(matrix + index) = INFINITY;
+            (*(matrix + index)) = INFINITY;
         }
+        list = NULL;
     }
 }
 
 /* free the graph object and ALL its resources.
  */
 Graph :: ~Graph(){
-    
+    //for list travel through eaxch node in lists, then delete array
+    //for matrix just delete the array
+    if(type == MATRIX && matrix != NULL){
+        delete matrix;
+    }
+    else{
+        if(list != NULL){
+            for(int index = 0; index < numVertices; index++){
+                while(list[index] != NULL){
+                    Node * temp = list[index];
+                    list[index] = list[index]->next;
+                    delete temp;
+                }
+            }
+            delete list;
+        }
+    }
 }
 
 /* make a DEEP copy of g, but using the representation
