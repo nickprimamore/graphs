@@ -82,12 +82,87 @@ Graph :: ~Graph(){
  If rep is not MATRIX or LIST, return NULL
  */
 Graph* Graph :: cloneGraph(int rep){
-    //unsure of the return for this method
-    if(type == rep){
-        return; //unsure of what to return
-    }else if(rep == MATRIX){
+    if(rep == MATRIX){
+        if(type == MATRIX){
+            return matrix;   
+        }else{
+            
+            //Make the new matrix
+            type = MATRIX;
+            float* matrixArray = new float[numVertices * numVertices]; // 1D array implementation
+            matrix = matrixArray;
+            for(int index = 0; index < (numVertices * numVertices); index++){
+                (*(matrix + index)) = INFINITY;
+            }
+            
+            //Fill in the existing edges
+            for(int index = 0; index < numVertices; index++){
+                if((list + index) != NULL){
+                    Graph::Node *current = *(list + index);
+                    boolean continue = true;
+                    while(continue){
+                        (*(matrix + (numVertices*index) + current->value - 1) = current->edgeWeight;
+                         if(current->next != NULL){
+                            current = current->next;   
+                         }else{
+                            continue = false;   
+                         }
+                    }
+                }
+            }
+                         
+            //Delete list
+            delete list;
+            list = NULL;
+        }
         
     }else if(rep == LIST){
+        if(type == list){
+            return list;   
+        }else{
+            
+            //Create the list
+            type = LIST;
+            Graph::Node** listArray = new Graph::Node*[numVertices];
+            list = listArray;
+            for(int index = 0; index < numVertices; index++){
+                (*(list + index)) = NULL;
+            }
+            
+            //Transfer existing edges
+            for(int index = 0; index < (numVertices * numVertices); index++){
+                if((*(matrix + index)) != INFINITY){
+                    //row is the start of the edge
+                    int row = index / numVertices;
+                    int column = index % numVertices;
+                    if((list + row) == NULL){
+                        (list + row) = new Graph::Node;
+                        (list + row)->value = column + 1;
+                        (list + row)->edgeWeight = (*(matrix + index));
+                        (list + row)->next = NULL;
+                    }else{
+                        Graph::Node cur = (list + row);
+                        boolean continue = true;
+                        while(continue){
+                            if(cur->next != NULL){
+                                cur = cur->next;   
+                            }else{
+                                continue = false;
+                            }
+                        }
+                        Graph::Node newNode = new Graph::Node;
+                        cur->next = newNode;
+                        newNode->value = column + 1;
+                        newNode->edgeWeight = (*(matrix + index));
+                        newNode->next = NULL;
+                    }
+                }
+            }
+            
+            //Delete Matrix
+            delete matrix;
+            matrix = NULL;  
+        }
         
     }else{
         return NULL;
