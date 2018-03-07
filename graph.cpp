@@ -185,15 +185,29 @@ int Graph :: numVerts(){
 bool Graph :: addEdge( int source, int target, float w){
     //invalid cases:
     if(w == INFINITY || w < 0) return false;
-    if(source < 0 || source > numVerts - 1) return false;
-    if(target < 0 || target > numVerts - 1) return false;
+    
+    //Made changes think the source and target are not zero based
+    source = source - 1;
+    target = target - 1;
+    if(source < 0 || source > numVerts-1) return false;
+    if(target < 0 || target > numVerts-1) return false;
     
     //FOR ADJACENCY LIST:
     //think of each slot in the array as "head" pointers, they are all NULL at first
     //check if NULL first before checking values and traversing list
     //if edge doesnt exist, dont care about NULL
     if(type == LIST && list != NULL){
-            
+        if(*(list+source) == NULL){
+            *(list+source) = new Graph::Node;
+            (list + source)->value = target-1;
+            (list + source)->edgeWeight = w;
+            (list + source)->next = NULL;
+        }
+        boolean continue = true;
+        Graph::Node *place = *(list+source);
+        while(continue){
+            if(place->value == target;
+        }
     }
     else{ //it's a matrix
         if(matrix != NULL){
