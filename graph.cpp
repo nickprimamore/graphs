@@ -101,7 +101,7 @@ Graph* Graph :: cloneGraph(int rep){
                     Graph::Node *current = *(list + index);
                     boolean continue = true;
                     while(continue){
-                        (*(matrix + (numVertices*index) + current->value - 1) = current->edgeWeight;
+                        (*(matrix + (numVertices*index) + current->value) = current->edgeWeight;
                          if(current->next != NULL){
                             current = current->next;   
                          }else{
@@ -186,9 +186,8 @@ bool Graph :: addEdge( int source, int target, float w){
     //invalid cases:
     if(w == INFINITY || w < 0) return false;
     
-    //Made changes think the source and target are not zero based
-    source = source - 1;
-    target = target - 1;
+    //source = source - 1;
+    //target = target - 1;
     if(source < 0 || source > numVerts-1) return false;
     if(target < 0 || target > numVerts-1) return false;
     
@@ -202,11 +201,22 @@ bool Graph :: addEdge( int source, int target, float w){
             (list + source)->value = target-1;
             (list + source)->edgeWeight = w;
             (list + source)->next = NULL;
+            return true;
         }
-        boolean continue = true;
         Graph::Node *place = *(list+source);
-        while(continue){
-            if(place->value == target;
+        while(true){
+            if(place->value == target){
+                return false;
+            }else if(place->next == NULL){
+                Graph::Node *newNode = new Graph::Node;
+                place->next = newNode;
+                newNode->value = target;
+                newNode->edgeWeight = w;
+                newNode->next = NULL;
+                return false;
+            }else{
+                *place = place->next;   
+            }
         }
     }
     else{ //it's a matrix
@@ -235,7 +245,23 @@ bool Graph :: delEdge(int source, int target){
     if(target < 0 || target > numVerts - 1) return false;
     
     if(type == LIST && list != NULL){
-        
+        if(*(list+source)==NULL){
+            return false;
+        }
+        Graph::Node *place = new Graph::Node;
+        Graph::Node *prevPlace = new Graph::Node;
+        while(true){
+            if(place->value == target){
+                prevPlace->next = place->next;
+                delete place;
+                return true;
+            }else if(place->next == NULL){
+                return false;
+            }else{
+                *prevPlace = place;
+                *place = place->next;
+            }
+        }
     }
     else{ //it's a matrix
         if(matrix != NULL){
@@ -261,7 +287,19 @@ float Graph :: edge( int source, int target){
     if(target < 0 || target > numVerts - 1) return -1.0;
     
     if(type == LIST && list != NULL){
-        
+       if(*(index + source) == NULL){
+            return INFINITY;   
+       }
+       Graph::Node *place = *(list+source);
+       while(true){
+            if(place->value == target){
+                return place->edgeWeight;
+            }else if(place->next == NULL){
+                return INFINITY;
+            }else{
+                *place = place->next;
+            }
+       }
     }
     else{ //it's a matrix
         if(matrix != NULL){
