@@ -93,14 +93,10 @@ Graph* Graph::cloneGraph(int rep){
                     repM->addEdge(row, column, *(matrix + index));
                 }
             }
-            //Delete Matrix
-            delete matrix;
-            matrix = NULL;
             return repM;
         }else{
             
             //Make the new matrix
-            type = MATRIX;
             Graph *newG = new Graph(numVertices, MATRIX);
             
             //Fill in the existing edges
@@ -121,12 +117,7 @@ Graph* Graph::cloneGraph(int rep){
                          }
                     }
                 }
-            }
-            
-                         
-            //Delete list
-            delete list;
-            list = NULL;
+            }             
             return newG;
         }
         
@@ -149,7 +140,6 @@ Graph* Graph::cloneGraph(int rep){
             }
         }else{
             //Create the list
-            type = LIST;
             Graph *newL = new Graph(numVertices, LIST);
             
             //Transfer existing edges
@@ -163,10 +153,6 @@ Graph* Graph::cloneGraph(int rep){
                     newL->addEdge(row, column, *(matrix + index));
                 }
             }
-            
-            //Delete Matrix
-            delete matrix;
-            matrix = NULL;
             return newL;
         }
         
@@ -344,7 +330,7 @@ int* Graph::successors( int source){
                 sucArray[arrCount] = place->value;
                 arrCount++;
                 if(place->next == NULL){
-                    sucArray[arrCount+1] = -1;
+                    sucArray[arrCount] = -1;
                     return sucArray;   
                 }else{
                     place = place->next;   
@@ -360,7 +346,7 @@ int* Graph::successors( int source){
                 arrCount++;
             }
         }
-        matSuc[arrCount+1] = -1;
+        matSuc[arrCount] = -1;
         return matSuc;
     }
     sucArray[0] = -1;
@@ -391,15 +377,15 @@ int* Graph::predecessors( int target){
                     if(place->value == target){
                         predArray[arrCount] = index;
                         arrCount++;
+                        cont = false;
                     }else if(place->next == NULL){
                         cont = false;
-                    }else{
-                        place = place->next;
                     }
+                    place = place->next;
                 } 
             }
         }
-        predArray[arrCount+1] = -1;
+        predArray[arrCount] = -1;
         return predArray;
     }else if(matrix != NULL){
         int arrCount = 0;
@@ -410,7 +396,6 @@ int* Graph::predecessors( int target){
                 arrCount++;
             }
         }
-        arrCount++;
         predArray[arrCount] = -1;
         return predArray;
     }
