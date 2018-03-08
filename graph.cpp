@@ -26,7 +26,7 @@ struct Graph :: Node{
  if n <1, set numVertices to 1
  if rep is not MATRIX or LIST, defaults to MATRIX
  */
-Graph :: Graph(int n, int rep){
+Graph::Graph(int n, int rep){
     if(n < 1){
         numVertices = 1;
     }
@@ -55,7 +55,7 @@ Graph :: Graph(int n, int rep){
 
 /* free the graph object and ALL its resources.
  */
-Graph :: ~Graph(){
+Graph::~Graph(){
     //for list travel through eaxch node in lists, then delete array
     //for matrix just delete the array
     if(type == MATRIX && matrix != NULL){
@@ -81,87 +81,93 @@ Graph :: ~Graph(){
  I.E. a change in the first graph should not change the second graph
  If rep is not MATRIX or LIST, return NULL
  */
-Graph* Graph :: cloneGraph(int rep){
+Graph* Graph::cloneGraph(int rep){
     if(rep == MATRIX){
         if(type == MATRIX){
-            return matrix;   
-        }else{
-            
-            //Make the new matrix
-            type = MATRIX;
-            float* matrixArray = new float[numVertices * numVertices]; // 1D array implementation
-            matrix = matrixArray;
-            for(int index = 0; index < (numVertices * numVertices); index++){
-                (*(matrix + index)) = INFINITY;
-            }
-            
-            //Fill in the existing edges
-            for(int index = 0; index < numVertices; index++){
-                if((list + index) != NULL){
-                    Graph::Node *current = *(list + index);
-                    boolean continue = true;
-                    while(continue){
-                        (*(matrix + (numVertices*index) + current->value) = current->edgeWeight;
-                         if(current->next != NULL){
-                            current = current->next;   
-                         }else{
-                            continue = false;   
-                         }
-                    }
-                }
-            }
-                         
-            //Delete list
-            delete list;
-            list = NULL;
-        }
-        
-    }else if(rep == LIST){
-        if(type == list){
-            return list;   
-        }else{
-            
-            //Create the list
-            type = LIST;
-            Graph::Node** listArray = new Graph::Node*[numVertices];
-            list = listArray;
-            for(int index = 0; index < numVertices; index++){
-                (*(list + index)) = NULL;
-            }
-            
-            //Transfer existing edges
+            Graph *repM = new Graph(numVertices, MATRIX); 
             for(int index = 0; index < (numVertices * numVertices); index++){
                 if((*(matrix + index)) != INFINITY){
                     //row is the start of the edge
                     int row = index / numVertices;
                     int column = index % numVertices;
-                    if((list + row) == NULL){
-                        (list + row) = new Graph::Node;
-                        (list + row)->value = column + 1;
-                        (list + row)->edgeWeight = (*(matrix + index));
-                        (list + row)->next = NULL;
-                    }else{
-                        Graph::Node cur = (list + row);
-                        boolean continue = true;
-                        while(continue){
-                            if(cur->next != NULL){
-                                cur = cur->next;   
-                            }else{
-                                continue = false;
-                            }
-                        }
-                        Graph::Node newNode = new Graph::Node;
-                        cur->next = newNode;
-                        newNode->value = column + 1;
-                        newNode->edgeWeight = (*(matrix + index));
-                        newNode->next = NULL;
+                    repM->addEdge(row, column, *(matrix + index));
+                }
+            }
+            //Delete Matrix
+            delete matrix;
+            matrix = NULL;
+            return repM;
+        }else{
+            
+            //Make the new matrix
+            type = MATRIX;
+            Graph *newG = new Graph(numVertices, MATRIX);
+            
+            //Fill in the existing edges
+            for(int index = 0; index < numVertices; index++){
+                
+                if(list[index] != NULL){
+                    
+                    Graph::Node *current = *(list + index);
+                    bool cont = true;
+                    while(cont){
+                        
+                        newG->addEdge(index, current->value, current->edgeWeight);
+                        
+                         if(current->next != NULL){
+                            current = current->next;   
+                         }else{
+                            cont = false;   
+                         }
                     }
+                }
+            }
+            
+                         
+            //Delete list
+            delete list;
+            list = NULL;
+            return newG;
+        }
+        
+    }else if(rep == LIST){
+        if(type == LIST){
+            Graph *repL = new Graph(numVertices, LIST); 
+            for(int index = 0; index < numVertices; index++){
+                if((list + index) != NULL){
+                    Graph::Node *current = *(list + index);
+                    bool cont = true;
+                    while(cont){
+                         repL->addEdge(index, current->value, current->edgeWeight);
+                         if(current->next != NULL){
+                            current = current->next;   
+                         }else{
+                            cont = false;   
+                         }
+                    }
+                }
+            }
+        }else{
+            //Create the list
+            type = LIST;
+            Graph *newL = new Graph(numVertices, LIST);
+            
+            //Transfer existing edges
+            for(int index = 0; index < (numVertices * numVertices); index++){
+                if((*(matrix + index)) != INFINITY){
+                    
+                    //row is the start of the edge
+                    int row = index / numVertices;
+                    int column = index % numVertices;
+
+                    newL->addEdge(row, column, *(matrix + index));
                 }
             }
             
             //Delete Matrix
             delete matrix;
-            matrix = NULL;  
+            matrix = NULL;
+            return newL;
         }
         
     }else{
@@ -182,14 +188,14 @@ int Graph :: numVerts(){
  make no change and return false. If the edge already exists, DO NOT UPDATE IT! Just return false
  if w is INFINITY or negative, do nothing, and return false.
  */
-bool Graph :: addEdge( int source, int target, float w){
+bool Graph::addEdge( int source, int target, float w){
     //invalid cases:
     if(w == INFINITY || w < 0) return false;
     
     //source = source - 1;
     //target = target - 1;
-    if(source < 0 || source > numVerts-1) return false;
-    if(target < 0 || target > numVerts-1) return false;
+    if(source < 0 || source > numVertices-1) return false;
+    if(target < 0 || target > numVertices-1) return false;
     
     //FOR ADJACENCY LIST:
     //think of each slot in the array as "head" pointers, they are all NULL at first
@@ -197,10 +203,10 @@ bool Graph :: addEdge( int source, int target, float w){
     //if edge doesnt exist, dont care about NULL
     if(type == LIST && list != NULL){
         if(*(list+source) == NULL){
-            *(list+source) = new Graph::Node;
-            (list + source)->value = target-1;
-            (list + source)->edgeWeight = w;
-            (list + source)->next = NULL;
+            list[source] = new Graph::Node;
+            list[source]->value = target;
+            list[source]->edgeWeight = w;
+            list[source]->next = NULL;
             return true;
         }
         Graph::Node *place = *(list+source);
@@ -213,7 +219,7 @@ bool Graph :: addEdge( int source, int target, float w){
                 newNode->value = target;
                 newNode->edgeWeight = w;
                 newNode->next = NULL;
-                return false;
+                return true;
             }else{
                 place = place->next;   
             }
@@ -239,10 +245,10 @@ bool Graph :: addEdge( int source, int target, float w){
  true, if there was an edge from source to target, and both source and target are valid vertex numbers.
  Otherwise, make no change and return false.
  */
-bool Graph :: delEdge(int source, int target){
+bool Graph::delEdge(int source, int target){
     //invalid vertices:
-    if(source < 0 || source > numVerts - 1) return false;
-    if(target < 0 || target > numVerts - 1) return false;
+    if(source < 0 || source > numVertices - 1) return false;
+    if(target < 0 || target > numVertices - 1) return false;
     
     if(type == LIST && list != NULL){
         if(*(list+source)==NULL){
@@ -281,13 +287,13 @@ bool Graph :: delEdge(int source, int target){
  if there is one; otherwise return INFINITY. (part of the math.h library)
  Return -1.0 if source or target are not valid vertex numbers.
  */
-float Graph :: edge( int source, int target){
+float Graph::edge( int source, int target){
     //invalid vertices:
-    if(source < 0 || source > numVerts - 1) return -1.0;
-    if(target < 0 || target > numVerts - 1) return -1.0;
+    if(source < 0 || source > numVertices - 1) return -1.0;
+    if(target < 0 || target > numVertices - 1) return -1.0;
     
     if(type == LIST && list != NULL){
-       if(*(index + source) == NULL){
+       if(*(list + source) == NULL){
             return INFINITY;   
        }
        Graph::Node *place = *(list+source);
@@ -320,21 +326,20 @@ float Graph :: edge( int source, int target){
  Make sure your returned array has enough spots for the number of successors, and the -1.
  If there are no successors, the array should only contain a -1
  If source is not a valid vertex number, return NULL
-
  Ownersip: the caller is responsible for deleting the array in their file.
  You should not make any delete call in your file graph relating to successors, but rather in your test file
  */
-int* successors( int source){
-    if(source < 0 || source > numVerts - 1) return NULL;
+int* Graph::successors( int source){
+    if(source < 0 || source > numVertices - 1) return NULL;
     
     int *sucArray = new int[numVertices];
-    if(type == list && list != NULL){
-        Graph::Node *place = *(list + source);
+    if(type == LIST && list != NULL){
+        int arrCount = 0;
         if(*(list+source) == NULL){
             sucArray[0] = -1;
             return sucArray;   
         }else{
-            int arrCount = 0;
+            Graph::Node *place = *(list + source);
             while(true){
                 sucArray[arrCount] = place->value;
                 arrCount++;
@@ -345,6 +350,7 @@ int* successors( int source){
                 }
             }
         }
+        sucArray[arrCount++] = -1;
     }else if(matrix != NULL){
         
     }
@@ -359,10 +365,9 @@ int* successors( int source){
  Make sure your returned array has enough spots for the number of successors, and the -1.
  If there are no successors, the array should only contain a -1
  If source is not a valid vertex number, return NULL
-
  Ownersip: the caller is responsible for deleting the array in their file.
  You should not make any delete call in your file relating to successors
  */
-int* predecessors( int target){
+int* Graph::predecessors( int target){
     
 }
