@@ -84,7 +84,7 @@ Graph::~Graph(){
 Graph* Graph::cloneGraph(int rep){
     if(rep == MATRIX){
         if(type == MATRIX){
-            Graph *repM = new Graph(numVertices, MATRIX);
+            Graph *repM = new Graph(numVertices, MATRIX); 
             for(int index = 0; index < (numVertices * numVertices); index++){
                 if((*(matrix + index)) != INFINITY){
                     //row is the start of the edge
@@ -114,16 +114,16 @@ Graph* Graph::cloneGraph(int rep){
                         
                         newG->addEdge(index, current->value, current->edgeWeight);
                         
-                        if(current->next != NULL){
-                            current = current->next;
-                        }else{
-                            cont = false;
-                        }
+                         if(current->next != NULL){
+                            current = current->next;   
+                         }else{
+                            cont = false;   
+                         }
                     }
                 }
             }
             
-            
+                         
             //Delete list
             delete list;
             list = NULL;
@@ -132,18 +132,18 @@ Graph* Graph::cloneGraph(int rep){
         
     }else if(rep == LIST){
         if(type == LIST){
-            Graph *repL = new Graph(numVertices, LIST);
+            Graph *repL = new Graph(numVertices, LIST); 
             for(int index = 0; index < numVertices; index++){
                 if((list + index) != NULL){
                     Graph::Node *current = *(list + index);
                     bool cont = true;
                     while(cont){
-                        repL->addEdge(index, current->value, current->edgeWeight);
-                        if(current->next != NULL){
-                            current = current->next;
-                        }else{
-                            cont = false;
-                        }
+                         repL->addEdge(index, current->value, current->edgeWeight);
+                         if(current->next != NULL){
+                            current = current->next;   
+                         }else{
+                            cont = false;   
+                         }
                     }
                 }
             }
@@ -159,7 +159,7 @@ Graph* Graph::cloneGraph(int rep){
                     //row is the start of the edge
                     int row = index / numVertices;
                     int column = index % numVertices;
-                    
+
                     newL->addEdge(row, column, *(matrix + index));
                 }
             }
@@ -221,7 +221,7 @@ bool Graph::addEdge( int source, int target, float w){
                 newNode->next = NULL;
                 return true;
             }else{
-                place = place->next;
+                place = place->next;   
             }
         }
     }
@@ -293,11 +293,11 @@ float Graph::edge( int source, int target){
     if(target < 0 || target > numVertices - 1) return -1.0;
     
     if(type == LIST && list != NULL){
-        if(*(list + source) == NULL){
-            return INFINITY;
-        }
-        Graph::Node *place = *(list+source);
-        while(true){
+       if(*(list + source) == NULL){
+            return INFINITY;   
+       }
+       Graph::Node *place = *(list+source);
+       while(true){
             if(place->value == target){
                 return place->edgeWeight;
             }else if(place->next == NULL){
@@ -305,7 +305,7 @@ float Graph::edge( int source, int target){
             }else{
                 place = place->next;
             }
-        }
+       }
     }
     else{ //it's a matrix
         if(matrix != NULL){
@@ -332,27 +332,36 @@ float Graph::edge( int source, int target){
 int* Graph::successors( int source){
     if(source < 0 || source > numVertices - 1) return NULL;
     
-    int *sucArray = new int[numVertices + 1];
+    int *sucArray = new int[numVertices+1];
     if(type == LIST && list != NULL){
         int arrCount = 0;
         if(*(list+source) == NULL){
             sucArray[0] = -1;
-            return sucArray;
+            return sucArray;   
         }else{
             Graph::Node *place = *(list + source);
             while(true){
                 sucArray[arrCount] = place->value;
                 arrCount++;
                 if(place->next == NULL){
-                    sucArray[arrCount++] = -1;
-                    return sucArray;
+                    sucArray[arrCount+1] = -1;
+                    return sucArray;   
                 }else{
-                    place = place->next;
+                    place = place->next;   
                 }
             }
         }
     }else if(matrix != NULL){
-        
+        int *matSuc = new int[numVertices+1];
+        int arrCount = 0;
+        for(int i = (numVertices * source); i < (numVertices * (source+1)); i++){
+            if(matrix[i] != INFINITY){
+                matSuc[arrCount] = i % numVertices;
+                arrCount++;
+            }
+        }
+        matSuc[arrCount+1] = -1;
+        return matSuc;
     }
     sucArray[0] = -1;
     return sucArray;
@@ -368,8 +377,31 @@ int* Graph::successors( int source){
  Ownersip: the caller is responsible for deleting the array in their file.
  You should not make any delete call in your file relating to successors
  */
-int* Graph::predecessors(int target){
-    else if(matrix != NULL){
+int* Graph::predecessors( int target){
+    if(target < 0 || target > numVertices - 1) return NULL;
+    int arrCount = 0;
+    int *predArray = new int[numVertices+1];
+    
+    if(type == LIST && list != NULL){
+        for(int index = 0; index < numVertices; index++){
+            if(list[index] != NULL){
+                Graph::Node *place = list[index];
+                bool cont = true;
+                while(cont){
+                    if(place->value == target){
+                        predArray[arrCount] = index;
+                        arrCount++;
+                    }else if(place->next == NULL){
+                        cont = false;
+                    }else{
+                        place = place->next;
+                    }
+                } 
+            }
+        }
+        predArray[arrCount+1] = -1;
+        return predArray;
+    }else if(matrix != NULL){
         int arrCount = 0;
         for(int index = 0; index < numVertices - 1; index++){
             int current = (numVertices * index) + target;
@@ -382,4 +414,6 @@ int* Graph::predecessors(int target){
         predArray[arrCount] = -1;
         return predArray;
     }
+    predArray[0] = -1;
+    return predArray;
 }
