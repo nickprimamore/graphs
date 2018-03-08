@@ -240,7 +240,13 @@ bool Graph::delEdge(int source, int target){
         if(*(list+source)==NULL){
             return false;
         }
-        Graph::Node *place = new Graph::Node;
+        if(list[source]->value == target){
+            Graph::Node *temp = list[source];
+            list[source] = list[source]->next;
+            delete temp;
+            return true;
+        }
+        Graph::Node *place = list[source];
         Graph::Node *prevPlace = new Graph::Node;
         while(true){
             if(place->value == target){
