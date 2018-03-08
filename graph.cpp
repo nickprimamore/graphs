@@ -215,7 +215,7 @@ bool Graph :: addEdge( int source, int target, float w){
                 newNode->next = NULL;
                 return false;
             }else{
-                *place = place->next;   
+                place = place->next;   
             }
         }
     }
@@ -258,8 +258,8 @@ bool Graph :: delEdge(int source, int target){
             }else if(place->next == NULL){
                 return false;
             }else{
-                *prevPlace = place;
-                *place = place->next;
+                prevPlace = place;
+                place = place->next;
             }
         }
     }
@@ -297,7 +297,7 @@ float Graph :: edge( int source, int target){
             }else if(place->next == NULL){
                 return INFINITY;
             }else{
-                *place = place->next;
+                place = place->next;
             }
        }
     }
@@ -312,4 +312,57 @@ float Graph :: edge( int source, int target){
             }
         }
     }
+    return INFINITY;
+}
+/* return a freshly new'd array with the successor
+ vertices of source, if any, followed by an entry with -1
+ to indicate end of sequence.
+ Make sure your returned array has enough spots for the number of successors, and the -1.
+ If there are no successors, the array should only contain a -1
+ If source is not a valid vertex number, return NULL
+
+ Ownersip: the caller is responsible for deleting the array in their file.
+ You should not make any delete call in your file graph relating to successors, but rather in your test file
+ */
+int* successors( int source){
+    if(source < 0 || source > numVerts - 1) return NULL;
+    
+    int *sucArray = new int[numVertices];
+    if(type == list && list != NULL){
+        Graph::Node *place = *(list + source);
+        if(*(list+source) == NULL){
+            sucArray[0] = -1;
+            return sucArray;   
+        }else{
+            int arrCount = 0;
+            while(true){
+                sucArray[arrCount] = place->value;
+                arrCount++;
+                if(place->next == NULL){
+                    return sucArray;   
+                }else{
+                    place = place->next;   
+                }
+            }
+        }
+    }else if(matrix != NULL){
+        
+    }
+    sucArray[0] = -1;
+    return sucArray;
+    
+}
+
+/*  return a freshly new'd array with the predecessor
+ vertices of source, if any, followed by an entry with -1
+ to indicate end of sequence.
+ Make sure your returned array has enough spots for the number of successors, and the -1.
+ If there are no successors, the array should only contain a -1
+ If source is not a valid vertex number, return NULL
+
+ Ownersip: the caller is responsible for deleting the array in their file.
+ You should not make any delete call in your file relating to successors
+ */
+int* predecessors( int target){
+    
 }
