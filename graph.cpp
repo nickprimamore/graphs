@@ -395,7 +395,7 @@ int* Graph::predecessors( int target){
         return predArray;
     }else if(matrix != NULL){
         int arrCount = 0;
-        for(int index = 0; index < numVertices - 1; index++){
+        for(int index = 0; index < numVertices; index++){
             int current = (numVertices * index) + target;
             if(matrix[current] != INFINITY){
                 predArray[arrCount] = index;
