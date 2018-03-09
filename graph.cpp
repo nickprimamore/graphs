@@ -125,7 +125,7 @@ Graph* Graph::cloneGraph(int rep){
         if(type == LIST){
             Graph *repL = new Graph(numVertices, LIST); 
             for(int index = 0; index < numVertices; index++){
-                if((list + index) != NULL){
+                if(list[index] != NULL){
                     Graph::Node *current = *(list + index);
                     bool cont = true;
                     while(cont){
@@ -138,6 +138,7 @@ Graph* Graph::cloneGraph(int rep){
                     }
                 }
             }
+            return repL;
         }else{
             //Create the list
             Graph *newL = new Graph(numVertices, LIST);
